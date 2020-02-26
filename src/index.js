@@ -56,8 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const likeButton = document.querySelector('#like_button')
     const likes = document.querySelector('#likes')
     const submitButton = document.querySelector('#submit-button')
-    // console.log(submitButton);
-    
+    const comment = document.querySelector('#comments')
+    // console.log(comment.lastChild.innerText);
     
     switch (true) {
       case event.target.id === likeButton.id:
@@ -70,11 +70,21 @@ document.addEventListener('DOMContentLoaded', () => {
           }, 
           body: JSON.stringify({ image_id: 4678, like_count: likes.innerText})
         }).then(response => response.json()).then((data) => console.log('Success:', data)).catch(errors => console.log(errors))
-        // console.log(likes.innerText);
         break
       case event.target.id === submitButton.id:
         event.preventDefault()
         addComment()
+        // --
+        fetch(commentsURL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ content: comment.lastChild.innerText, image_id: 4678 })
+        }).then(response => response.json()).then((data) => console.log('Success:', data)).catch(errors => console.log(errors))
+
+        // --
         break
     }
   })
