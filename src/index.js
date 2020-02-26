@@ -20,7 +20,7 @@ function renderPhoto(response){
             <input type="submit" id="submit-button" value="Submit"/>
           </form>
           <ul id="comments">
-               ${(response.comments.map(comment => `<li id = ${comment.id}> ${comment.content} </li>`)).join("")}
+               ${(response.comments.map(comment => `<li id = ${comment.id}> ${comment.content} <button class = "delete-button" id= ${comment.id}> delete button </button> </li>`)).join("")}
           </ul>
     `
 }
@@ -60,6 +60,10 @@ document.addEventListener('DOMContentLoaded', () => {
           image_id: parseInt(event.target.id)
         })
       })
+    } else if (event.target.className === "delete-button"){
+      fetch(`https://randopic.herokuapp.com/comments/${event.target.id}`, {
+        method: "DELETE"
+      }).then(event.target.parentElement.remove())
     }
   })
   document.addEventListener("submit", function(event){
@@ -68,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let image = document.getElementsByTagName("img")
       let newComment = event.target.elements[0].value
       const form = document.getElementById("comment_form")
-      commentsUl.innerHTML += `<li>${newComment}</li>`
+      commentsUl.innerHTML += `<li>${newComment} <button class = "delete-button"> delete button </button></li>`
 
       fetch('https://randopic.herokuapp.com/comments', {
         method: "POST",
