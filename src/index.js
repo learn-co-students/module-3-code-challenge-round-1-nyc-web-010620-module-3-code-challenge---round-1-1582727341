@@ -57,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const likes = document.querySelector('#likes')
     const submitButton = document.querySelector('#submit-button')
     const comment = document.querySelector('#comments')
-    // console.log(comment.lastChild.innerText);
     
     switch (true) {
       case event.target.id === likeButton.id:
