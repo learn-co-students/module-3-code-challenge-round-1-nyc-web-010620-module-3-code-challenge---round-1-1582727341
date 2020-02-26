@@ -31,7 +31,7 @@ Today we're building an app for viewing, liking, and commenting on a single pict
 A user of your app must be able to do the following things:
 
 - As a user, when the page loads, I should see:
-  - an image
+  - an image 
   - any comments that image has
   - the number of likes that image has
 
