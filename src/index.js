@@ -1,114 +1,83 @@
 document.addEventListener('DOMContentLoaded', () => {
   console.log('%c DOM Content Loaded and Parsed!', 'color: magenta')
 
-  let imageId = 4672
+  let imageId = 5809
 
-  const imageURL = `https://randopic.herokuapp.com/images/${imageId}`
+  let image_link = `https://randopic.herokuapp.com/images/${imageId}`
+  let likes_url = "https://randopic.herokuapp.com/likes"
+  let comment_link ="https://randopic.herokuapp.com/comments"
 
-  const likeURL = `https://randopic.herokuapp.com/likes/`
+  let ul = document.getElementById('comments')
 
-  const commentsURL = `https://randopic.herokuapp.com/comments/`
+  fetch(image_link)
+  .then(resp =>resp.json())
+  .then(page => (renderPage(page)))
 
 
-  
-  fetch(imageURL)
-  .then(resp => resp.json())
-  .then(image =>{
-    
-    const div = document.getElementById('image_card')
-    div.innerHTML =`
-    <div id="image_card" class="card col-md-4">
-    <img src="${image.url}" id="image" data-id=""/>
-    <h4 id="name">${image.name}</h4>
-    <span>Likes:
-      <span id="likes">${image.like_count}</span>
-    </span>
-    <button id="like_button">Like</button>
-    <form id="comment_form">
-      <input id="comment_input" type="text" name="comment" placeholder="Add Comment"/>
-      <input type="submit" value="Submit"/>
-    </form>
-    <ul id="comments">
-    </ul>
-  </div>
-`
-  })
+   function renderPage(page){
+     let image = document.getElementById('image')
+     image.src =page.url
+     let name = document.getElementById('name')
+     name.innerText=page.name
+     let likes = document.getElementById('likes')
+     likes.innerText= page.like_count
+     
+     let comments = page.comments
+          comments.forEach(comment=> {
+          let li = document.createElement('li')
+          li.innerText = comment.content
+          ul.appendChild(li)
+         })
+   }//function renderPage
 
-    const likeButtom = document.getElementById('like_button')
-    document.addEventListener("click", function(event){
-    const span = document.getElementById('likes')
-    const number = parseInt(span.innerText)
+   let button = document.getElementById('like_button')
 
-    const newNumber = number+1
+   button.addEventListener("click", e=>{
+     let likesNumber = parseInt(likes.innerText)
+     let newNumber = likesNumber+1
+     likes.innerText = newNumber
+     body = {image_id: imageId}
 
-    event.target.parentNode.children[2].innerText = `Likes: ${newNumber}`
-    
-    const body ={image_id:imageId, like_count: newNumber}
-    fetch(likeURL, {
-      method: "POST",
-      headers: {
+    options = {
+      method:"POST",
+      headers:{
         "content-type": "application/json",
-        "accept": "application/json"
+        accept: "application/json"
       },
       body: JSON.stringify(body)
-    })
-    .then(resp =>resp.json())
-    .then(console.log)
-  })
+    }
+    fetch(likes_url, options)
+   })//addEventListener
 
+   let form = document.getElementById("comment_form")
+   form.addEventListener("submit", e=>{
+     e.preventDefault()
 
-  const form = document.getElementById('comment_form')
+     let comment = e.target.comment.value
+     let li = document.createElement('li')
+     li.innerHTML = comment
+     ul.appendChild(li)
 
-  form.addEventListener('click', function(event){
-       console.dir(event.target)
-       const ul = document.getElementById('comments')
-       const li = document.createElement('li')
-
-       li.innerText = event.target.comment.value
-       newComment = li.innerText
-
-       ul.append(li)
+     let body ={
+      image_id: imageId,
+      content: comment
+    }
+     options = {
+      method:"POST",
+      headers:{
+        "content-type": "application/json",
+        accept: "application/json"
+      },
+      body: JSON.stringify(body)
+    }
+     fetch(comment_link, options) 
+     
+   })
       
-       const body = {comment:newComment}
-
-       fetch(commentsURL, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          accept: "application/json"
-        },
-        body: JSON.stringify(body)
-      })
-
-  })
-
-
-    
 
 
 
-
-
-
-
-
-
-    
-    
-    
-    
-
-
-
-
-  
-
-
-
-
-
-
-
+   
 
 
 })//dom load
